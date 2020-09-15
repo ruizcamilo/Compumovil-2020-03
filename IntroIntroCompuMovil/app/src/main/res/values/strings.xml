@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">IntroIntroCompuMovil</string>
+    <string name="abecedario">abcdefghijklmnopqrstuvwxyz</string>
+    <string name="unoadiez">12345678910</string>
+    <string-array name="nivelEducativo">
+        <item>Primaria</item>
+        <item>Bachiller</item>
+        <item>Técnico</item>
+        <item>Profesional</item>
+        <item>Maestría</item>
+        <item>Doctorado</item>
+        <item>Postdoctorado</item>
+    </string-array>
+</resources>
