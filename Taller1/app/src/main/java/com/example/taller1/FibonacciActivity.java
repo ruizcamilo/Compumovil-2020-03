@@ -23,7 +23,7 @@ public class FibonacciActivity extends AppCompatActivity {
 
     ImageView imgFibo;
     ListView respuesta;
-    List<Integer> fibo;
+    List<Double> fibo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +33,10 @@ public class FibonacciActivity extends AppCompatActivity {
         respuesta = findViewById(R.id.espacio);
         Intent a = getIntent();
         double pos = Double.parseDouble(a.getStringExtra("posicion"));
-        fibo=new ArrayList<Integer>();
+        fibo=new ArrayList<Double>();
         try{
             double res = Fibonacci(pos);
-            ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_list_item_1, fibo);
+            ArrayAdapter<Double> adapter = new ArrayAdapter<Double>(this, android.R.layout.simple_list_item_1, fibo);
             respuesta.setAdapter(adapter);
         }catch(OutOfMemoryError e)
         {
@@ -48,19 +48,19 @@ public class FibonacciActivity extends AppCompatActivity {
 
     public double Fibonacci(double n)
     {
-        fibo.add(0);
+        fibo.add(0.0);
         if(n == 0) {
             return n;
         }
-        fibo.add(1);
+        fibo.add(1.0);
         if(n == 1) {
             return n;
         }
-        int fib = 1;
-        int prevFib = 1;
+        double fib = 1;
+        double prevFib = 1;
         fibo.add(fib);
-        for(int i=2; i<n; i++) {
-            int temp = fib;
+        for(double i=2; i<n; i++) {
+            double temp = fib;
             fib+= prevFib;
             prevFib = temp;
             fibo.add(fib);
