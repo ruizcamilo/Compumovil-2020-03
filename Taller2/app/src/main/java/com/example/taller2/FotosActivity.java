@@ -32,6 +32,8 @@ public class FotosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fotos);
+        imagen =findViewById(R.id.selectedPhoto);
+        imagen.setImageResource(R.drawable.mundo);
         requestMyPermissions();
     }
 

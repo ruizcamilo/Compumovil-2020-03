@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(v.getContext(),FotosActivity.class);
         startActivity(intent);
     }
-    /*public void Mapa(View v){
-        Intent intent = new Intent(v.getContext(),MapaActivity.class);
+    public void Mapa(View v){
+        Intent intent = new Intent(v.getContext(),MapsActivity.class);
         startActivity(intent);
-    }*/
+    }
 }
