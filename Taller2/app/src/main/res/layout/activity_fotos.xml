@@ -38,7 +38,8 @@
             android:layout_weight="1"
             android:onClick="selectImage"
             android:text="SELECCIONAR IMAGEN"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:enabled="true"/>
 
         <Button
             android:id="@+id/camara"
@@ -47,7 +48,8 @@
             android:layout_weight="1"
             android:onClick="takePhoto"
             android:text="CAMARA"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:enabled="true"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

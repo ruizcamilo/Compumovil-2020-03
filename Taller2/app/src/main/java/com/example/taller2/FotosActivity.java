@@ -34,70 +34,63 @@ public class FotosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fotos);
         imagen =findViewById(R.id.selectedPhoto);
         imagen.setImageResource(R.drawable.mundo);
-        requestMyPermissions();
     }
 
-    private void requestMyPermissions() {
-        imagenBut=findViewById(R.id.imagen);
-        camaraBut=findViewById(R.id.camara);
-        int permissionStorage = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int permissionCamera = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if(permissionStorage != PackageManager.PERMISSION_GRANTED)
-        {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        }else{
-            imagenBut.setEnabled(true);
-        }
-        if(permissionCamera != PackageManager.PERMISSION_GRANTED)
-        {
-            listPermissionsNeeded.add(Manifest.permission.CAMERA);
-        }else{
-            camaraBut.setEnabled(true);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),OUR_MULTIPLE_REQUESTS);
+    private void requestPermission(Activity context, String permiso, String justificacion, int idCode) {
+        if (ContextCompat.checkSelfPermission(context, permiso) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context,permiso)) {
+                // Show an explanation to the user *asynchronously*
+            }
+            ActivityCompat.requestPermissions(context, new String[]{permiso}, idCode);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
         imagenBut = findViewById(R.id.imagen);
         camaraBut = findViewById(R.id.camara);
         switch (requestCode) {
-            case OUR_MULTIPLE_REQUESTS: {
-                if (grantResults.length > 0) {
-                    for(int i=0; i < permissions.length; i++){
-                    //for (String per : permissions) {
-                        System.out.println(permissions[i]+" "+grantResults[i]);
-                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                            if(permissions[i].equals("android.permission.READ_EXTERNAL_STORAGE"))
-                            {
-                                imagenBut.setEnabled(true);
-                            }
-                            if(permissions[i].equals("android.permission.CAMERA")) {
-                                System.out.println("entro!");
-                                camaraBut.setEnabled(true);
-                            }
-                        }
-                    }
-                    break;
+            case REQUEST_IMAGE_CAPTURE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    takePhoto(imagenBut);
+                } else {
+                    Toast.makeText(this, "Permiso denegado acceder a la camara", Toast.LENGTH_SHORT).show();
+                    //camaraBut.setEnabled(false);
                 }
+                return;
+            }
+            case IMAGE_PICKER_REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    selectImage(camaraBut);
+                } else {
+                    Toast.makeText(this, "Permiso denegado para almacenamiento externo", Toast.LENGTH_SHORT).show();
+                    //imagenBut.setEnabled(false);
+                }
+                return;
             }
         }
     }
 
     public void selectImage(View v){
-        Intent pickImage = new Intent(Intent.ACTION_PICK);
-        pickImage.setType("image/*");
-        startActivityForResult(pickImage, IMAGE_PICKER_REQUEST);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            Intent pickImage = new Intent(Intent.ACTION_PICK);
+            pickImage.setType("image/*");
+            startActivityForResult(pickImage, IMAGE_PICKER_REQUEST);
+        }else{
+            requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, "Porfis, es para el taller", IMAGE_PICKER_REQUEST);
+        }
     }
 
     public void takePhoto(View v)
     {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }else{
+            requestPermission(this, Manifest.permission.CAMERA, "Porfis, es para el taller", REQUEST_IMAGE_CAPTURE);
         }
     }
 

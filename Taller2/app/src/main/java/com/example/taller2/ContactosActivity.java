@@ -27,8 +27,7 @@ public class ContactosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contactos);
-
-        requestPermission(this, Manifest.permission.READ_CONTACTS, "Porfis, es para el taller", MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+        listContacts();
     }
 
     private void requestPermission(Activity context, String permiso, String justificacion, int idCode) {
@@ -37,9 +36,6 @@ public class ContactosActivity extends AppCompatActivity {
                 // Show an explanation to the user *asynchronously*
             }
             ActivityCompat.requestPermissions(context, new String[]{permiso}, idCode);
-        }
-        else{
-            listContacts();
         }
     }
 
@@ -61,11 +57,15 @@ public class ContactosActivity extends AppCompatActivity {
 
     public void listContacts()
     {
-        mlista=findViewById(R.id.contactos);
-        mContactsAdapter = new ContactsAdapter(this, null, 0);
-        mlista.setAdapter(mContactsAdapter);
-        mProjection = new String[]{ ContactsContract.Profile._ID, ContactsContract.Profile.DISPLAY_NAME_PRIMARY};
-        mCursor=getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, mProjection, null, null, null);
-        mContactsAdapter.changeCursor(mCursor);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            mlista = findViewById(R.id.contactos);
+            mContactsAdapter = new ContactsAdapter(this, null, 0);
+            mlista.setAdapter(mContactsAdapter);
+            mProjection = new String[]{ContactsContract.Profile._ID, ContactsContract.Profile.DISPLAY_NAME_PRIMARY};
+            mCursor = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, mProjection, null, null, null);
+            mContactsAdapter.changeCursor(mCursor);
+        } else{
+            requestPermission(this, Manifest.permission.READ_CONTACTS, "Porfis, es para el taller", MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+        }
     }
 }
