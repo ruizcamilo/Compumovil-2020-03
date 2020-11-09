@@ -8,27 +8,18 @@
     android:background="@color/blancofachero"
     android:id="@+id/layoutLogin">
 
-        <TextView
-            android:id="@+id/top"
-            android:layout_width="match_parent"
-            android:layout_height="28dp"
-            android:background="@color/azulfachero"
-            android:text=""
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tittle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="120dp"
         android:fontFamily="@font/domine_bold"
         android:text="@string/main"
         android:textColor="@color/negrofachero"
         android:textSize="40sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top" />
+        app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/userText"

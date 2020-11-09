@@ -8,16 +8,6 @@
     android:id="@+id/layoutSignUp"
     >
 
-    <TextView
-        android:id="@+id/inicio"
-        android:layout_width="match_parent"
-        android:layout_height="28dp"
-        android:background="@color/azulfachero"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/bottom"
@@ -38,98 +28,93 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inicio">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/nombre"
-            android:textColor="@color/negrofachero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="45dp"
             android:paddingBottom="10dp"
             android:text="@string/nombre"
-            />
+            android:textColor="@color/negrofachero" />
 
         <EditText
             android:id="@+id/nombreText"
             android:layout_width="300dp"
             android:layout_height="45dp"
+            android:layout_marginStart="45dp"
             android:autofillHints=""
             android:inputType="text"
-            tools:ignore="LabelFor"
-            android:layout_marginStart="45dp" />
+            tools:ignore="LabelFor" />
 
         <TextView
             android:id="@+id/apellido"
-            android:textColor="@color/negrofachero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="45dp"
             android:paddingBottom="10dp"
             android:text="@string/apellido"
-            />
+            android:textColor="@color/negrofachero" />
 
         <EditText
             android:id="@+id/apellidoText"
             android:layout_width="300dp"
             android:layout_height="45dp"
+            android:layout_marginStart="45dp"
             android:autofillHints=""
             android:inputType="text"
-            tools:ignore="LabelFor"
-            android:layout_marginStart="45dp" />
+            tools:ignore="LabelFor" />
 
         <TextView
             android:id="@+id/email"
-            android:textColor="@color/negrofachero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="45dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/email"
-            />
+            android:textColor="@color/negrofachero" />
 
         <EditText
             android:id="@+id/emailText"
             android:layout_width="300dp"
             android:layout_height="45dp"
+            android:layout_marginStart="45dp"
             android:autofillHints=""
             android:ems="10"
             android:inputType="textEmailAddress"
-            tools:ignore="LabelFor,TextFields"
-            android:layout_marginStart="45dp" />
+            tools:ignore="LabelFor,TextFields" />
 
         <TextView
             android:id="@+id/contraseña"
-            android:textColor="@color/negrofachero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="45dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/contraseña"
-            />
+            android:textColor="@color/negrofachero" />
 
         <EditText
             android:id="@+id/contraseñaText"
             android:layout_width="300dp"
             android:layout_height="45dp"
+            android:layout_marginStart="45dp"
             android:autofillHints=""
             android:ems="10"
             android:inputType="textPassword"
-            tools:ignore="LabelFor"
-            android:layout_marginStart="45dp"/>
+            tools:ignore="LabelFor" />
 
         <TextView
             android:id="@+id/imagen_contacto"
-            android:textColor="@color/negrofachero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="45dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/img_contacto"
-            />
+            android:textColor="@color/negrofachero" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -138,14 +123,13 @@
 
             <TextView
                 android:id="@+id/imgText"
-                android:textColor="@color/azulclarofachero"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="55dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text=""
-                />
+                android:textColor="@color/azulclarofachero" />
 
             <View
                 android:layout_width="0dp"
@@ -157,44 +141,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
+                android:background="@color/azulfachero"
                 android:text="@string/seleccionar"
                 android:textAllCaps="false"
-                android:background="@color/azulfachero"
-                android:textColor="@color/blancofachero"/>
+                android:textColor="@color/blancofachero" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/identificacion"
-            android:textColor="@color/negrofachero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="45dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/identificacion"
-            />
+            android:textColor="@color/negrofachero" />
 
         <EditText
             android:id="@+id/idText"
             android:layout_width="300dp"
             android:layout_height="45dp"
+            android:layout_marginStart="45dp"
             android:autofillHints=""
             android:ems="10"
             android:inputType="number"
-            tools:ignore="LabelFor,TextFields"
-            android:layout_marginStart="45dp" />
+            tools:ignore="LabelFor,TextFields" />
 
         <TextView
             android:id="@+id/ubicacion"
-            android:textColor="@color/negrofachero"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="45dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/ubicacion"
-            />
+            android:textColor="@color/negrofachero" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -203,14 +185,13 @@
 
             <TextView
                 android:id="@+id/ubiText"
-                android:textColor="@color/azulclarofachero"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="55dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text=""
-                />
+                android:textColor="@color/azulclarofachero" />
 
             <View
                 android:layout_width="0dp"
@@ -222,27 +203,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
+                android:background="@color/azulfachero"
                 android:text="@string/seleccionar"
                 android:textAllCaps="false"
-                android:background="@color/azulfachero"
-                android:textColor="@color/blancofachero"/>
+                android:textColor="@color/blancofachero" />
 
         </LinearLayout>
 
         <Button
-            android:layout_marginTop="30dp"
-            android:layout_gravity="center"
             android:id="@+id/boton_registrarse"
             android:layout_width="180dp"
             android:layout_height="38dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:background="@color/azulfachero"
             android:text="@string/registrarme"
             android:textAllCaps="false"
-            android:background="@color/azulfachero"
             android:textColor="@color/blancofachero"
             tools:layout_editor_absoluteX="101dp"
             tools:layout_editor_absoluteY="359dp" />
-
-
 
 
     </LinearLayout>
