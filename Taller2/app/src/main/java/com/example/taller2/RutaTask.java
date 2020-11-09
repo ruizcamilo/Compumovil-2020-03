@@ -30,8 +30,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class RutaTask extends AsyncTask<Void, Integer, Boolean> {
-    private static final String TOAST_MSG = "Calculating";
-    private static final String TOAST_ERR_MAJ = "Impossible to trace Itinerary";
+    private static final String TOAST_MSG = "Calculando";
+    private static final String TOAST_ERR_MAJ = "Imposible encontrar ruta";
     private Context context;
     private Geocoder mGeocoder;
     private GoogleMap gMap;
@@ -49,7 +49,7 @@ public class RutaTask extends AsyncTask<Void, Integer, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        Toast.makeText(context, TOAST_MSG, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, TOAST_MSG, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -61,6 +61,7 @@ public class RutaTask extends AsyncTask<Void, Integer, Boolean> {
             url.append("&destination=");
             url.append(editTo.latitude + "," + editTo.longitude);
             url.append("&key=");
+            url.append(""); //TODO get the appi key
             System.out.println(url.toString());
             final InputStream stream = new URL(url.toString()).openStream();
             final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -131,13 +132,16 @@ public class RutaTask extends AsyncTask<Void, Integer, Boolean> {
     protected void onPostExecute(final Boolean result) {
         if (!result) {
             Toast.makeText(context, TOAST_ERR_MAJ, Toast.LENGTH_SHORT).show();
+            gMap.addMarker(new MarkerOptions().position(editTo).title(geoCoderSearchLatLang(editTo)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(editTo, 15));
+
         } else {
             final PolylineOptions polylines = new PolylineOptions();
             polylines.color(Color.parseColor("#EF6C00"));
             for (final LatLng latLng : lstLatLng) {
                 polylines.add(latLng);
             }
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lstLatLng.get(lstLatLng.size() - 1), 13));
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lstLatLng.get(lstLatLng.size() - 1), 15));
             gMap.addMarker(new MarkerOptions().position(lstLatLng.get(0)).title(geoCoderSearchLatLang(lstLatLng.get(0))).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
             gMap.addPolyline(polylines);
             gMap.addMarker(new MarkerOptions().position(lstLatLng.get(lstLatLng.size() - 1)).title(geoCoderSearchLatLang(lstLatLng.get(lstLatLng.size() - 1))).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));

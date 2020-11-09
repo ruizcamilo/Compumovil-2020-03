@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FotosActivity extends AppCompatActivity {
-    private static final int IMAGE_PICKER_REQUEST = 1, REQUEST_IMAGE_CAPTURE=2, OUR_MULTIPLE_REQUESTS=3;
+    private static final int IMAGE_PICKER_REQUEST = 1, REQUEST_IMAGE_CAPTURE=2;
     Button imagenBut, camaraBut;
     ImageView imagen;
     @Override
