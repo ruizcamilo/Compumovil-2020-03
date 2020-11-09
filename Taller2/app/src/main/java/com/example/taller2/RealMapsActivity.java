@@ -71,7 +71,7 @@ import static com.google.android.gms.tasks.Tasks.await;
 
 public class RealMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final int LOCATION_PERMISSION = 1;
+    private static final int LOCATION_PERMISSION = 2;
     private static final double RADIUS_OF_EARTH_KM = 6371;
     private static final int REQUEST_CHECK_SETTINGS = 2;
     private GoogleMap mMap;
@@ -96,6 +96,8 @@ public class RealMapsActivity extends FragmentActivity implements OnMapReadyCall
         setContentView(R.layout.activity_real_maps);
         mLocationRequest = createLocationRequest();
         initLocation();
+        requestPermission(this, Manifest.permission.ACCESS_FINE_LOCATION, "porfis, es para el taller", LOCATION_PERMISSION);
+        getLocation();
         setSensors();
         readAdresses();
     }
@@ -104,7 +106,6 @@ public class RealMapsActivity extends FragmentActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa);
         mapFragment.getMapAsync(this);
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
-        getLocation();
     }
 
     @Override
@@ -164,36 +165,8 @@ public class RealMapsActivity extends FragmentActivity implements OnMapReadyCall
         return address;
     }
 
-    private void requestPermission(Activity context, String permiso, String justificacion, int idCode) {
-        if (ContextCompat.checkSelfPermission(context, permiso) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            }
-            ActivityCompat.requestPermissions(context, new String[]{permiso}, idCode);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case LOCATION_PERMISSION: {
-                System.out.println(grantResults);
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getLocation();
-                } else {
-                    Toast.makeText(this, "Permiso denegado para ver la localización", Toast.LENGTH_LONG).show();
-                    /*LatLng bogota = new LatLng(4.65, -74.05);
-                    mMap.addMarker(new MarkerOptions().position(bogota).title("Marcador en Bogotá"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(bogota));
-                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));*/
-                    finish();
-                }
-                return;
-            }
-        }
-    }
-
     public void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getGPS();
             mLocationProvider.getLastLocation().addOnSuccessListener(this, new
                     OnSuccessListener<Location>() {
@@ -216,13 +189,36 @@ public class RealMapsActivity extends FragmentActivity implements OnMapReadyCall
                         if(myPositionMarker != null) {
                             myPositionMarker.remove();
                         }
-                        myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición: " + geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.fromResource(R.drawable.person)));
+                        myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.fromResource(R.drawable.person)));
                     }
                 }
             };
         }
         else {
-            requestPermission(this, Manifest.permission.ACCESS_FINE_LOCATION, "porfis, es para el taller", 1);
+            requestPermission(this, Manifest.permission.ACCESS_FINE_LOCATION, "porfis, es para el taller", LOCATION_PERMISSION);
+        }
+    }
+
+    private void requestPermission(Activity context, String permiso, String justificacion, int idCode) {
+        if (ContextCompat.checkSelfPermission(context, permiso) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context, permiso)) {
+            }
+            ActivityCompat.requestPermissions(context, new String[]{permiso}, idCode);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocation();
+                } else {
+                    Toast.makeText(this, "Permiso denegado para ver la localización", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                return;
+            }
         }
     }
 
@@ -363,7 +359,7 @@ public class RealMapsActivity extends FragmentActivity implements OnMapReadyCall
 
     private void crearRuta(LatLng origen, LatLng destino) {
         mMap.clear();
-        myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición: " + geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.fromResource(R.drawable.person)));
+        myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.fromResource(R.drawable.person)));
         new RutaTask(this, mMap, origen, destino).execute();
     }
 
