@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Registro"
+    android:id="@+id/layoutSignUp"
+    >
+
+    <TextView
+        android:id="@+id/inicio"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:background="@color/azulfachero"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/azulfachero"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inicio">
+
+        <TextView
+            android:id="@+id/usr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="45dp"
+            android:paddingBottom="10dp"
+            android:text="@string/user"
+            />
+
+        <EditText
+            android:id="@+id/passText"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:inputType="textPassword"
+            tools:ignore="LabelFor"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="136dp" />
+
+
+        <TextView
+            android:id="@+id/cont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="45dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/contraseña"
+            />
+
+        <EditText
+            android:id="@+id/usernameText"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:autofillHints=""
+            android:inputType="text"
+            tools:ignore="LabelFor"
+            tools:layout_editor_absoluteX="74dp"
+            tools:layout_editor_absoluteY="450dp" />
+
+        <TextView
+            android:id="@+id/emailview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="45dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/email"
+            />
+
+        <EditText
+            android:id="@+id/mailText"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:inputType="text"
+            tools:ignore="LabelFor,TextFields"
+             />
+
+        <Button
+            android:id="@+id/boton_registrarse"
+            android:layout_width="180dp"
+            android:layout_height="38dp"
+            android:layout_below="@id/mailText"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/boton_registrarse"
+            android:text="@string/register"
+            android:textAllCaps="false"
+
+            android:textColor="@color/blanco"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="359dp" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

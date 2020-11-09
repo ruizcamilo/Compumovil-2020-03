@@ -4,15 +4,134 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/blancofachero"
+    android:id="@+id/layoutLogin">
+
+        <TextView
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:background="@color/azulfachero"
+            android:text=""
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tittle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/domine_bold"
+        android:text="@string/main"
+        android:textColor="@color/negrofachero"
+        android:textSize="40sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/top" />
+
+        <EditText
+            android:id="@+id/userText"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:autofillHints=""
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usr"
+            tools:ignore="LabelFor" />
+
+        <TextView
+            android:id="@+id/cont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/negrofachero"
+            android:paddingStart="45dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/contraseña"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userText"
+            tools:ignore="RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/usr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:paddingStart="45dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/user"
+        android:textColor="@color/negrofachero"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tittle"
+        tools:ignore="RtlSymmetry" />
+
+
+        <EditText
+            android:id="@+id/passwordText"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cont"
+            tools:ignore="LabelFor" />
+
+
+    <Button
+        android:id="@+id/boton_login"
+        android:layout_width="125dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@color/azulfachero"
+        android:text="@string/login"
+        android:textAllCaps="false"
+        android:textSize="17sp"
+        android:textColor="@color/blancofachero"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordText" />
+
+        <TextView
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:background="@color/azulfachero"
+            android:text=""
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/registrarse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/registrate"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textColor="@color/negrofachero"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/boton_login" />
+
+        <TextView
+            android:id="@+id/link_registro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/registrarme"
+            android:textColor="@color/azulclarofachero"
+            android:textSize="17sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/registrarse" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

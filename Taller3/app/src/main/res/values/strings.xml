@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Taller3</string>
+    <string name="main">Taller #3</string>
+    <string name="contraseña">"Contraseña</string>
+    <string name="user">"Usuario</string>
+    <string name="login">"Login"</string>
+    <string name="registrate">"Si no estas registrado, ¡Regístrate!</string>
+    <string name="registrarme">Registrarme</string>
+    <string name="email">"Email"</string>
 </resources>
