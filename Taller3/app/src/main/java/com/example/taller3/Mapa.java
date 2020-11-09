@@ -1,5 +1,6 @@
 package com.example.taller3;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
@@ -15,7 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Mapa extends FragmentActivity implements OnMapReadyCallback {
+public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FirebaseAuth mAuth;
