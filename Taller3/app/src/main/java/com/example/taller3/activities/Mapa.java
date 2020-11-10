@@ -292,7 +292,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                         }
                         myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                         //TODO cambiar mi posicion en la base de datos
-
                     }
                 }
             };
@@ -370,7 +369,23 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         return super.onOptionsItemSelected(item);
     }
 
-    public void cambiarEstado(){
-        
+    public void cambiarEstado() {
+        myRef = database.getReference(PATH_USERS+mAuth.getCurrentUser().getUid());
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    Usuario myUser = dataSnapshot.getValue(Usuario.class);
+                    if(myUser.isActivo())
+                        myUser.setActivo(false);
+                    else
+                        myUser.setActivo(true);
+                    myRef.setValue(myUser);
+                    Log.i("Mapa", "Encontró usuario: " + myUser.getNombre());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Mapa", "error en la consulta", databaseError.toException());
+            }
+        });
     }
 }
