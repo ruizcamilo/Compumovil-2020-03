@@ -1,4 +1,4 @@
-package com.example.taller3;
+package com.example.taller3.tasks;
 
 import android.content.Context;
 import android.graphics.Color;
