@@ -13,6 +13,7 @@ public class Usuario {
     private LatLng ubicacion;
     private boolean activo;
 
+
     public Usuario(String nombre, String apellido, String email, String identificacion, LatLng ubicacion) {
         this.nombre = nombre;
         this.apellido = apellido;
@@ -61,4 +62,8 @@ public class Usuario {
     public void setUbicacion(LatLng ubicacion) {
         this.ubicacion = ubicacion;
     }
+
+    public boolean isActivo() { return activo; }
+
+    public void setActivo(boolean activo) { this.activo = activo; }
 }

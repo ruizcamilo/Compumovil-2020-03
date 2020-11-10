@@ -47,6 +47,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -243,7 +244,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                         }
                         myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                         //TODO cambiar mi posicion en la base de datos
-
                     }
                 }
             };
@@ -320,7 +320,25 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         return super.onOptionsItemSelected(item);
     }
 
-    public void cambiarEstado(){
-        
+    public void cambiarEstado() {
+        myRef = database.getReference(PATH_USERS+mAuth.getCurrentUser().getUid());
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    Usuario myUser = singleSnapshot.getValue(Usuario.class);
+                    if(myUser.isActivo())
+                        myUser.setActivo(false);
+                    else
+                        myUser.setActivo(true);
+                    myRef.setValue(myUser);
+                    Log.i("Mapa", "Encontró usuario: " + myUser.getNombre());
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Mapa", "error en la consulta", databaseError.toException());
+            }
+        });
     }
 }
