@@ -53,6 +53,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;

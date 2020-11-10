@@ -98,8 +98,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         setContentView(R.layout.activity_mapa);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa);
         mapFragment.getMapAsync(this);
-        //Layout
-        accion = findViewById(R.id.accionMap);
         //FireBase
         mAuth = FirebaseAuth.getInstance();
         database= FirebaseDatabase.getInstance();
@@ -173,30 +171,11 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         switch (choice){
             case 1:
                 //TODO ver mi posicion actual en vivo y mostrar las localizaciones del archivo JSON
-                accion.setVisibility(View.INVISIBLE);
                 break;
             case 2:
                 //TODO ver la posicion de otra persona en vivo con datos de firebase
-                accion.setVisibility(View.VISIBLE);
-                accion.setText("Ruta!");
                 //Localización de la persona que estoy buscando
                 getUsersLocation();
-                accion.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(myPosition != null) {
-                            if (usersPosition != null) {
-                                crearRuta(myPosition, usersPosition);
-                            }
-                            else{
-                                Toast.makeText(Mapa.this,"No pudimos localizar la posición del usuario que buscas", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        else{
-                            Toast.makeText(Mapa.this,"No pudimos localizar tu posición", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
                 break;
             default:
                 Toast.makeText(this,"Hubo error con el Intent", Toast.LENGTH_SHORT).show();
@@ -209,25 +188,24 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         //TODO GIGANTE
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("bundle");
-        //String id = bundle.getString("id");
-        String id = "pr7au9DNE4YySM4RVnIiAxp0QH42";
-        myRef=database.getReference(PATH_USERS/*+id*/);
+        String id = bundle.getString("id");
+        //String id = "nQMV65EyRjgSNW1XV8XzGtW2zxB3";
+        myRef=database.getReference(PATH_USERS+id);
         val = myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(usersMarker != null) {
                     usersMarker.remove();
                 }
-                for(DataSnapshot ds: dataSnapshot.getChildren())
-                {
-                    System.out.println(ds.getValue(Usuario.class));
-//                    System.out.println("--------------------------");
-  //                  System.out.println(myuser.getNombre() + " " + myuser.getApellido());
-                    /*usersPosition = new LatLng(myuser.getUbicacion().latitude, myuser.getUbicacion().longitude);
-                    usersMarker = mMap.addMarker(new MarkerOptions().position(usersPosition).title(myuser.getEmail()).snippet(geoCoderSearchLatLang(usersPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                    Usuario myuser = dataSnapshot.getValue(Usuario.class);
+                    usersPosition = new LatLng(myuser.getLatitud(), myuser.getLongitud());
+                    double distance = calcularDistancia(myPosition, usersPosition);
+                    usersMarker = mMap.addMarker(new MarkerOptions().position(usersPosition).title(myuser.getNombre() + " "+ myuser.getApellido()+" - "+ distance+"km.").snippet(geoCoderSearchLatLang(usersPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(usersPosition));
-                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));*/
-                }
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                    calcularDistancia(myPosition, usersPosition);
+                    Toast.makeText(Mapa.this, "La distancia de aquí al punto es de: "+distance+"km.", Toast.LENGTH_LONG).show();
+
             }
 
             @Override
@@ -235,6 +213,16 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
             }
         });
+    }
+
+    public double calcularDistancia(LatLng inicio, LatLng fin)
+    {
+        double latDistance = Math.toRadians(inicio.latitude - fin.latitude);
+        double lngDistance = Math.toRadians(inicio.longitude - fin.longitude);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) + Math.cos(Math.toRadians(myPosition.latitude)) * Math.cos(Math.toRadians(fin.latitude)) * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double result = RADIUS_OF_EARTH_KM * c;
+        return Math.round(result*100.0)/100.0;
     }
 
     public void solicitarPermiso(Activity context, String permiso, String justificacion, int idPermiso){
