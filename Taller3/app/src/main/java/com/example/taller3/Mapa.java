@@ -23,7 +23,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
@@ -50,8 +49,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -70,14 +71,11 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient mLocationProvider;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
-    private Marker myPositionMarker, myMarker;
-    private SensorManager sensorManager;
-    private Sensor lightSensor;
-    private SensorEventListener lightSensorListener;
+    private Marker myPositionMarker;
     private LatLng myPosition;
     private LatLng usersPosition;
-    private LatLng eventPosition;
     private Button accion;
+    public static final String PATH_USERS="users/";
     public static final double lowerLeftLatitude = 1.396967;
     public static final double lowerLeftLongitude= -78.903968;
     public static final double upperRightLatitude= 11.983639;
@@ -87,10 +85,10 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        accion = findViewById(R.id.accionMap);
         setContentView(R.layout.activity_mapa);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa);
         mapFragment.getMapAsync(this);
+        accion = findViewById(R.id.accionMap);
         mAuth = FirebaseAuth.getInstance();
         database= FirebaseDatabase.getInstance();
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
@@ -104,7 +102,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(lightSensorListener, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates();
         }
@@ -113,7 +110,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     protected void onPause() {
         super.onPause();
-        sensorManager.unregisterListener(lightSensorListener);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             stopLocationUpdates();
         }
@@ -159,15 +155,19 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 break;
             case 2:
                 //TODO ver la posicion de otra persona en vivo con datos de firebase
-                accion.setVisibility(View.INVISIBLE);
+                accion.setVisibility(View.VISIBLE);
                 accion.setText("Ruta!");
-                // Conseguir poisición actual
-                getUsersLocation(bundle.getString("id"));
+                getUsersLocation(bundle.getString("id"), "Camilo Ruiz");
                 accion.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         if(myPosition != null) {
-                            crearRuta(myPosition, usersPosition);
+                            if (usersPosition != null) {
+                                crearRuta(myPosition, usersPosition);
+                            }
+                            else{
+                                Toast.makeText(Mapa.this,"No pudimos localizar la posición del usuario que buscas", Toast.LENGTH_SHORT).show();
+                            }
                         }
                         else{
                             Toast.makeText(Mapa.this,"No pudimos localizar tu posición", Toast.LENGTH_SHORT).show();
@@ -182,11 +182,11 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    private void getUsersLocation(String id) {
+    private void getUsersLocation(String id, String nombre) {
         //TODO GIGANTE
-        myRef=database.getReference(id);
+        myRef=database.getReference(PATH_USERS+"-MLjxeut7jHHeJpercOm");
         /*final LatLng position = new LatLng(Double.parseDouble(Objects.requireNonNull(bundle.getString("latitud"))), Double.parseDouble(Objects.requireNonNull(bundle.getString("longitud"))));
-        mMap.addMarker(new MarkerOptions().position(position).title(bundle.getString("evento") ).snippet(geoCoderSearchLatLang(position)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+        mMap.addMarker(new MarkerOptions().position(position).title(nombre).snippet(geoCoderSearchLatLang(position)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));*/
     }
@@ -227,6 +227,10 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                                 if(code == 1) {
                                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
                                     mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                                }else{
+                                    //TODO change for usersposition
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+                                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                 }
                             }
                         }
@@ -241,6 +245,8 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                             myPositionMarker.remove();
                         }
                         myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                        //TODO cambiar mi posicion en la base de datos
+
                     }
                 }
             };
@@ -264,7 +270,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 int statusCode = ((ApiException) e).getStatusCode();
                 switch (statusCode) {
                     case CommonStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied, but this can be fixed by showing the user a dialog.
                         try {// Show the dialog by calling startResolutionForResult(), and check the result in onActivityResult()
                             ResolvableApiException resolvable = (ResolvableApiException) e;
                             resolvable.startResolutionForResult(Mapa.this, REQUEST_CHECK_SETTINGS);

@@ -40,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signInUser(usuarioText.getText().toString(),contraseñaText.getText().toString());
+                Intent intent = new Intent(getBaseContext(), Mapa.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("codigo", 2);
+                intent.putExtra("bundle", bundle);
+                startActivity(intent);
+                //signInUser(usuarioText.getText().toString(),contraseñaText.getText().toString());
             }
         });
 
