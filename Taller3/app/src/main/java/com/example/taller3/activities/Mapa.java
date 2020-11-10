@@ -1,10 +1,9 @@
-package com.example.taller3;
+package com.example.taller3.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,6 +21,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.taller3.R;
+import com.example.taller3.tasks.RutaTask;
+import com.example.taller3.model.Usuario;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -54,14 +56,20 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
+    //FireBase Authentication
     private FirebaseAuth mAuth;
+
+    //FireBase Database
     private FirebaseDatabase database;
     private DatabaseReference myRef;
+    private ValueEventListener val;
+    public static final String PATH_USERS="users/";
+
+    //Map
+    private GoogleMap mMap;
     private static final int LOCATION_PERMISSION = 1;
     private static final double RADIUS_OF_EARTH_KM = 6371;
     private static final int REQUEST_CHECK_SETTINGS = 2;
@@ -71,13 +79,17 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     private LocationCallback mLocationCallback;
     private Marker myPositionMarker;
     private LatLng myPosition;
+    private Marker usersMarker;
     private LatLng usersPosition;
-    private Button accion;
-    public static final String PATH_USERS="users/";
     public static final double lowerLeftLatitude = 1.396967;
     public static final double lowerLeftLongitude= -78.903968;
     public static final double upperRightLatitude= 11.983639;
     public static final double upperRightLongitude= -71.869905;
+
+    //Layout
+    private Button accion;
+
+    //Intent
     private int code;
 
     @Override
@@ -86,14 +98,19 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         setContentView(R.layout.activity_mapa);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa);
         mapFragment.getMapAsync(this);
+        //Layout
         accion = findViewById(R.id.accionMap);
+        //FireBase
         mAuth = FirebaseAuth.getInstance();
         database= FirebaseDatabase.getInstance();
+        myRef = database.getReference(PATH_USERS);
+        //Map
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
         mLocationRequest = createLocationRequest();
         mGeocoder = new Geocoder(getBaseContext());
-
+        //Permiso
         solicitarPermiso(this, Manifest.permission.ACCESS_FINE_LOCATION, "", LOCATION_PERMISSION);
+        //Mi localización
         getMyLocation();
     }
 
@@ -103,6 +120,9 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates();
         }
+        if(code == 2) {
+            getUsersLocation();
+        }
     }
 
     @Override
@@ -110,6 +130,10 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         super.onPause();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             stopLocationUpdates();
+        }
+        if(val != null)
+        {
+            myRef.removeEventListener(val);
         }
     }
 
@@ -155,7 +179,8 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 //TODO ver la posicion de otra persona en vivo con datos de firebase
                 accion.setVisibility(View.VISIBLE);
                 accion.setText("Ruta!");
-                getUsersLocation(bundle.getString("id"), "Camilo Ruiz");
+                //Localización de la persona que estoy buscando
+                getUsersLocation();
                 accion.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -180,13 +205,36 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    private void getUsersLocation(String id, String nombre) {
+    private void getUsersLocation() {
         //TODO GIGANTE
-        myRef=database.getReference(PATH_USERS+"-MLjxeut7jHHeJpercOm");
-        /*final LatLng position = new LatLng(Double.parseDouble(Objects.requireNonNull(bundle.getString("latitud"))), Double.parseDouble(Objects.requireNonNull(bundle.getString("longitud"))));
-        mMap.addMarker(new MarkerOptions().position(position).title(nombre).snippet(geoCoderSearchLatLang(position)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(15));*/
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra("bundle");
+        //String id = bundle.getString("id");
+        String id = "pr7au9DNE4YySM4RVnIiAxp0QH42";
+        myRef=database.getReference(PATH_USERS/*+id*/);
+        val = myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(usersMarker != null) {
+                    usersMarker.remove();
+                }
+                for(DataSnapshot ds: dataSnapshot.getChildren())
+                {
+                    System.out.println(ds.getValue(Usuario.class));
+//                    System.out.println("--------------------------");
+  //                  System.out.println(myuser.getNombre() + " " + myuser.getApellido());
+                    /*usersPosition = new LatLng(myuser.getUbicacion().latitude, myuser.getUbicacion().longitude);
+                    usersMarker = mMap.addMarker(new MarkerOptions().position(usersPosition).title(myuser.getEmail()).snippet(geoCoderSearchLatLang(usersPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(usersPosition));
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));*/
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void solicitarPermiso(Activity context, String permiso, String justificacion, int idPermiso){
@@ -226,9 +274,9 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
                                     mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                 }else{
-                                    //TODO change for usersposition
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
-                                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                                    //TODO probable null pointer exception
+                                    //mMap.moveCamera(CameraUpdateFactory.newLatLng(usersPosition));
+                                    //mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                 }
                             }
                         }
@@ -315,7 +363,8 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         }else if (itemClicked == R.id.estado){
             cambiarEstado();
         }else if (itemClicked == R.id.list){
-            //Holis
+            Intent intent = new Intent(Mapa.this, ListActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -1,4 +1,4 @@
-package com.example.taller3;
+package com.example.taller3.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.taller3.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getBaseContext(), Mapa.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("codigo", 2);
+                bundle.putString("id", "OO1n1R3jFRXOMGkIj4tjArflOQY2");
                 intent.putExtra("bundle", bundle);
                 startActivity(intent);
                 //signInUser(usuarioText.getText().toString(),contraseñaText.getText().toString());
