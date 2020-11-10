@@ -41,7 +41,9 @@ public class ListActivity extends AppCompatActivity {
     List<String> apellidos= new ArrayList<>();
     List<String> ids= new ArrayList<>();
     List<String> emails= new ArrayList<>();
-    List<LatLng> ubicaciones= new ArrayList<>();
+    List<Double> latitudes= new ArrayList<>();
+    List<Double> longitudes= new ArrayList<>();
+    List<String> imagenes= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,9 @@ public class ListActivity extends AppCompatActivity {
                 apellidos.clear();
                 ids.clear();
                 emails.clear();
-                ubicaciones.clear();
+                latitudes.clear();
+                longitudes.clear();
+                imagenes.clear();
                 for(DataSnapshot single: dataSnapshot.getChildren())
                 {
                     Usuario myuser = single.getValue(Usuario.class);
@@ -70,9 +74,11 @@ public class ListActivity extends AppCompatActivity {
                     apellidos.add(myuser.getApellido());
                     ids.add(myuser.getIdentificacion());
                     emails.add(myuser.getEmail());
-                    ubicaciones.add(myuser.getUbicacion());
+                    latitudes.add(myuser.getLatitud());
+                    longitudes.add(myuser.getLongitud());
+                    imagenes.add(myuser.getImagen());
                 }
-                adapterList = new People(ListActivity.this, nombres, apellidos, ids, emails, ubicaciones, new BtnClickListener() {
+                adapterList = new People(ListActivity.this, nombres, apellidos, ids, emails, latitudes, longitudes, imagenes, new BtnClickListener() {
                     @Override
                     public void onBtnClick(int position) {
                         maps(position);

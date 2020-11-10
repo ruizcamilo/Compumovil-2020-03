@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,16 +30,13 @@ public class People extends ArrayAdapter<String> {
     private final List<String> apellidos;
     private final List<String> ids;
     private final List<String> emails;
-    private final List<LatLng> ubicaciones;
-
+    private final List<Double> latitudes;
+    private final List<Double> longitudes;
+    private final List<String> imagenes;
 
     private BtnClickListener mClickListener = null;
 
-    private SensorManager sensorManager;
-    private Sensor lightSensor;
-    private SensorEventListener lightSensorListener;
-
-    public People(Activity context, List<String> names, List<String> apeds, List<String> idents, List<String> mails, List<LatLng> locations, BtnClickListener listener) {
+    public People(Activity context, List<String> names, List<String> apeds, List<String> idents, List<String> mails, List<Double> latitudes, List<Double> longitudes ,List<String> imagenes, BtnClickListener listener) {
         super(context, R.layout.list_item, mails);
 
         this.context=context;
@@ -46,11 +44,13 @@ public class People extends ArrayAdapter<String> {
         this.apellidos=apeds;
         this.ids=idents;
         this.emails = mails;
-        this.ubicaciones = locations;
+        this.latitudes = latitudes;
+        this.longitudes = longitudes;
+        this.imagenes = imagenes;
         this.mClickListener = listener;
     }
 
-    /*public View getView(int position,View view,ViewGroup parent) {
+    public View getView(int position,View view,ViewGroup parent) {
 
         final ViewHolderPublicacion holder;
         if(view==null){
@@ -59,11 +59,12 @@ public class People extends ArrayAdapter<String> {
             view = inflater.inflate(R.layout.list_item, parent, false);
 
             holder = new ViewHolderPublicacion();
-            holder.layout = view.findViewById(R.id.layoutPublicacion);
-            holder.nomb = (TextView) view.findViewById(R.id.tittles);
-            holder.descrip = (TextView) view.findViewById(R.id.descripcion);
-            holder.imgPerf = (ImageView) view.findViewById(R.id.icon);
-            holder.imgEv = (ImageView) view.findViewById(R.id.imagevento);
+            holder.layout = view.findViewById(R.id.layoutPersona);
+            holder.nombre = (TextView) view.findViewById(R.id.nombre);
+            holder.apellido = (TextView) view.findViewById(R.id.apellido);
+            holder.id = (TextView) view.findViewById(R.id.identificacion);
+            holder.mail =(TextView) view.findViewById(R.id.mail);
+            holder.image = (ImageView) view.findViewById(R.id.image);
 
             view.setTag(holder);
 
@@ -71,12 +72,13 @@ public class People extends ArrayAdapter<String> {
             holder = (ViewHolderPublicacion) view.getTag();
         }
 
-        holder.nomb.setText(nombre[position]);
-        holder.imgPerf.setImageResource(imgperfil[position]);
-        holder.descrip.setText(descripcion[position]);
-        holder.imgEv.setImageResource(imgevento[position]);
+        holder.nombre.setText(nombres.get(position));
+        holder.apellido.setText(apellidos.get(position));
+        holder.mail.setText(emails.get(position));
+        holder.id.setText(ids.get(position));
+        holder.image.setImageResource(imagenes.get(position)); //Cómoooo
 
-        Button map = (Button) view.findViewById(R.id.meet);
+        Button map = (Button) view.findViewById(R.id.button);
         map.setTag(position); //For passing the list item index
         map.setOnClickListener(new View.OnClickListener() {
 
@@ -86,31 +88,6 @@ public class People extends ArrayAdapter<String> {
                     mClickListener.onBtnClick((Integer) v.getTag());
             }
         });
-        final ColorStateList colorViejo = holder.nomb.getTextColors();
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        lightSensorListener = new SensorEventListener() {
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                if (event.values[0] < 5000) {
-                    Log.i("THEME", "DARK THEME " + event.values[0]);
-                    holder.layout.setBackgroundResource(R.color.dark_bg);
-                    holder.nomb.setTextColor(context.getResources().getColor(R.color.blanco));
-                    holder.descrip.setTextColor(context.getResources().getColor(R.color.blanco));
-
-                } else {
-                    Log.i("THEME", "LIGHT THEME " + event.values[0]);
-                    holder.layout.setBackgroundResource(R.color.blanco);
-                    holder.nomb.setTextColor(colorViejo);
-                    holder.descrip.setTextColor(colorViejo);
-
-                }
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            }
-        };
 
         return view;
 
@@ -118,11 +95,12 @@ public class People extends ArrayAdapter<String> {
     };
 
     static class ViewHolderPublicacion {
-        RelativeLayout layout;
-        TextView nomb;
-        TextView descrip;
-        ImageView imgPerf;
-        ImageView imgEv;
-    }*/
+        LinearLayout layout;
+        TextView nombre;
+        TextView apellido;
+        TextView id;
+        TextView mail;
+        ImageView image;
+    }
 }
 
