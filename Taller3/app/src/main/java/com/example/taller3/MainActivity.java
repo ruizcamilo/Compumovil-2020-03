@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         registro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(),Registro.class);
+                Intent intent = new Intent(view.getContext(),Mapa.class);
                 startActivity(intent);
             }
         });
