@@ -68,8 +68,11 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     private FusedLocationProviderClient mLocationProvider;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+<<<<<<< Updated upstream
     private Marker myPositionMarker;
+=======
     private Marker myPositionMarker, myMarker;
+>>>>>>> Stashed changes
     private LatLng myPosition;
     private LatLng usersPosition;
     private Button accion;
@@ -84,6 +87,10 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
+<<<<<<< Updated upstream
+=======
+        accion = findViewById(R.id.accionMap);
+>>>>>>> Stashed changes
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapa);
         mapFragment.getMapAsync(this);
         accion = findViewById(R.id.accionMap);
@@ -100,17 +107,23 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     protected void onResume() {
         super.onResume();
+<<<<<<< Updated upstream
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates();
         }
+=======
+>>>>>>> Stashed changes
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+<<<<<<< Updated upstream
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             stopLocationUpdates();
         }
+=======
+>>>>>>> Stashed changes
     }
 
     private void startLocationUpdates(){
