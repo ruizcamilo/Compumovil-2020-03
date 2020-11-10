@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         registro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(),Mapa.class);
+                Intent intent = new Intent(view.getContext(),Registro.class);
                 startActivity(intent);
             }
         });
@@ -67,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser currentUser){
         if(currentUser!=null){
             Intent intent = new Intent(getBaseContext(), Mapa.class);
-            intent.putExtra("user", currentUser.getEmail());
+            Bundle bundle = new Bundle();
+            bundle.putInt("codigo", 1);
+            intent.putExtra("bundle", bundle);
             startActivity(intent);
         } else {
             contraseñaText.setText("");

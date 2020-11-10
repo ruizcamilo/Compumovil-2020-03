@@ -20,21 +20,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="15dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/nombre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="45dp"
+            android:paddingStart="30dp"
             android:paddingBottom="10dp"
             android:text="@string/nombre"
             android:textColor="@color/negrofachero" />
@@ -43,7 +48,7 @@
             android:id="@+id/nombreText"
             android:layout_width="300dp"
             android:layout_height="45dp"
-            android:layout_marginStart="45dp"
+            android:layout_marginStart="30dp"
             android:autofillHints=""
             android:inputType="text"
             tools:ignore="LabelFor" />
@@ -52,7 +57,7 @@
             android:id="@+id/apellido"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="45dp"
+            android:paddingStart="30dp"
             android:paddingBottom="10dp"
             android:text="@string/apellido"
             android:textColor="@color/negrofachero" />
@@ -61,7 +66,7 @@
             android:id="@+id/apellidoText"
             android:layout_width="300dp"
             android:layout_height="45dp"
-            android:layout_marginStart="45dp"
+            android:layout_marginStart="30dp"
             android:autofillHints=""
             android:inputType="text"
             tools:ignore="LabelFor" />
@@ -70,7 +75,7 @@
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="45dp"
+            android:paddingStart="30dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/email"
@@ -80,7 +85,7 @@
             android:id="@+id/emailText"
             android:layout_width="300dp"
             android:layout_height="45dp"
-            android:layout_marginStart="45dp"
+            android:layout_marginStart="30dp"
             android:autofillHints=""
             android:ems="10"
             android:inputType="textEmailAddress"
@@ -90,7 +95,7 @@
             android:id="@+id/contraseña"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="45dp"
+            android:paddingStart="30dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/contraseña"
@@ -100,7 +105,7 @@
             android:id="@+id/contraseñaText"
             android:layout_width="300dp"
             android:layout_height="45dp"
-            android:layout_marginStart="45dp"
+            android:layout_marginStart="30dp"
             android:autofillHints=""
             android:ems="10"
             android:inputType="textPassword"
@@ -110,7 +115,7 @@
             android:id="@+id/imagen_contacto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="45dp"
+            android:paddingStart="30dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/img_contacto"
@@ -125,7 +130,7 @@
                 android:id="@+id/imgText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="55dp"
+                android:paddingStart="30dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text=""
@@ -152,7 +157,7 @@
             android:id="@+id/identificacion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="45dp"
+            android:paddingStart="30dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/identificacion"
@@ -162,7 +167,7 @@
             android:id="@+id/idText"
             android:layout_width="300dp"
             android:layout_height="45dp"
-            android:layout_marginStart="45dp"
+            android:layout_marginStart="30dp"
             android:autofillHints=""
             android:ems="10"
             android:inputType="number"
@@ -172,7 +177,7 @@
             android:id="@+id/ubicacion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="45dp"
+            android:paddingStart="30dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:text="@string/ubicacion"
@@ -187,7 +192,7 @@
                 android:id="@+id/ubiText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="55dp"
+                android:paddingStart="30dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text=""
@@ -225,6 +230,7 @@
 
 
     </LinearLayout>
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

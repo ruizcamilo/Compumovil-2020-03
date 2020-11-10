@@ -11,6 +11,7 @@ public class Usuario {
     private String email;
     private String identificacion;
     private LatLng ubicacion;
+    private boolean activo;
 
     public Usuario(String nombre, String apellido, String email, String identificacion, LatLng ubicacion) {
         this.nombre = nombre;
@@ -18,6 +19,7 @@ public class Usuario {
         this.email = email;
         this.identificacion = identificacion;
         this.ubicacion = ubicacion;
+        this.activo = false;
     }
 
     public String getNombre() {
