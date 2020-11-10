@@ -76,7 +76,7 @@ public class People extends ArrayAdapter<String> {
         holder.apellido.setText(apellidos.get(position));
         holder.mail.setText(emails.get(position));
         holder.id.setText(ids.get(position));
-        holder.image.setImageResource(imagenes.get(position)); //Cómoooo
+        //holder.image.setImageResource(imagenes.get(position)); //Cómoooo
 
         Button map = (Button) view.findViewById(R.id.button);
         map.setTag(position); //For passing the list item index

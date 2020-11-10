@@ -70,13 +70,15 @@ public class ListActivity extends AppCompatActivity {
                 for(DataSnapshot single: dataSnapshot.getChildren())
                 {
                     Usuario myuser = single.getValue(Usuario.class);
-                    nombres.add(myuser.getNombre());
-                    apellidos.add(myuser.getApellido());
-                    ids.add(myuser.getIdentificacion());
-                    emails.add(myuser.getEmail());
-                    latitudes.add(myuser.getLatitud());
-                    longitudes.add(myuser.getLongitud());
-                    imagenes.add(myuser.getImagen());
+                    if(myuser.isActivo()) {
+                        nombres.add(myuser.getNombre());
+                        apellidos.add(myuser.getApellido());
+                        ids.add(myuser.getIdentificacion());
+                        emails.add(myuser.getEmail());
+                        latitudes.add(myuser.getLatitud());
+                        longitudes.add(myuser.getLongitud());
+                        imagenes.add(myuser.getImagen());
+                    }
                 }
                 adapterList = new People(ListActivity.this, nombres, apellidos, ids, emails, latitudes, longitudes, imagenes, new BtnClickListener() {
                     @Override
