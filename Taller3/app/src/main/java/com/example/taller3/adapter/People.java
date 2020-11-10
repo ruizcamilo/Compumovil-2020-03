@@ -3,10 +3,14 @@ package com.example.taller3.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +22,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.example.taller3.R;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class People extends ArrayAdapter<String> {
@@ -35,6 +49,8 @@ public class People extends ArrayAdapter<String> {
     private final List<String> imagenes;
 
     private BtnClickListener mClickListener = null;
+
+    private StorageReference mStorageRef;
 
     public People(Activity context, List<String> names, List<String> apeds, List<String> idents, List<String> mails, List<Double> latitudes, List<Double> longitudes ,List<String> imagenes, BtnClickListener listener) {
         super(context, R.layout.list_item, mails);
@@ -65,18 +81,23 @@ public class People extends ArrayAdapter<String> {
             holder.id = (TextView) view.findViewById(R.id.identificacion);
             holder.mail =(TextView) view.findViewById(R.id.mail);
             holder.image = (ImageView) view.findViewById(R.id.image);
-
             view.setTag(holder);
 
         }else{
             holder = (ViewHolderPublicacion) view.getTag();
         }
 
+        try {
+            downloadFile(position,holder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         holder.nombre.setText(nombres.get(position));
         holder.apellido.setText(apellidos.get(position));
         holder.mail.setText(emails.get(position));
         holder.id.setText(ids.get(position));
-        holder.image.setImageResource(imagenes.get(position)); //Cómoooo
+
 
         Button map = (Button) view.findViewById(R.id.button);
         map.setTag(position); //For passing the list item index
@@ -101,6 +122,24 @@ public class People extends ArrayAdapter<String> {
         TextView id;
         TextView mail;
         ImageView image;
+    }
+
+    private void downloadFile(final int position, final ViewHolderPublicacion holder) throws IOException {
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference imgRef = mStorageRef.child(imagenes.get(position));
+        final File localFile = File.createTempFile("images", "jpg");
+        imgRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
+                holder.image.setImageBitmap(bitmap);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 }
 
