@@ -69,6 +69,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
     private Marker myPositionMarker;
+    private Marker myPositionMarker, myMarker;
     private LatLng myPosition;
     private LatLng usersPosition;
     private Button accion;
