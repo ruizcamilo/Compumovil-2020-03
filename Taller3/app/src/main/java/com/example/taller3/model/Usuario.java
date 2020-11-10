@@ -10,8 +10,7 @@ public class Usuario {
     private String apellido;
     private String email;
     private String identificacion;
-
-
+    private String imagen;
     private Double latitud;
     private Double longitud;
     private boolean activo;
@@ -19,13 +18,14 @@ public class Usuario {
     public Usuario(){
 
     }
-    public Usuario(String nombre, String apellido, String email, String identificacion, Double latitud, Double longitud) {
+    public Usuario(String nombre, String apellido, String email, String identificacion,String imagen, LatLng ubicacion) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.identificacion = identificacion;
-        this.latitud = latitud;
-        this.longitud = longitud;
+        this.latitud = ubicacion.latitude;
+        this.longitud = ubicacion.longitude;
+        this.imagen = imagen;
         this.activo = false;
     }
 
@@ -84,4 +84,8 @@ public class Usuario {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
+
+    public String getImagen() { return imagen; }
+
+    public void setImagen(String imagen) { this.imagen = imagen; }
 }

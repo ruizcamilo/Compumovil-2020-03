@@ -70,7 +70,7 @@ public class ListActivity extends AppCompatActivity {
                     apellidos.add(myuser.getApellido());
                     ids.add(myuser.getIdentificacion());
                     emails.add(myuser.getEmail());
-                    ubicaciones.add(myuser.getUbicacion());
+                    //ubicaciones.add(myuser.getUbicacion());
                 }
                 adapterList = new People(ListActivity.this, nombres, apellidos, ids, emails, ubicaciones, new BtnClickListener() {
                     @Override

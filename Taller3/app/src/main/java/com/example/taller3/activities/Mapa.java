@@ -374,15 +374,13 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    Usuario myUser = singleSnapshot.getValue(Usuario.class);
+                    Usuario myUser = dataSnapshot.getValue(Usuario.class);
                     if(myUser.isActivo())
                         myUser.setActivo(false);
                     else
                         myUser.setActivo(true);
                     myRef.setValue(myUser);
                     Log.i("Mapa", "Encontró usuario: " + myUser.getNombre());
-                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

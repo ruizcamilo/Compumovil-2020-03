@@ -134,7 +134,6 @@ public class Registro extends AppCompatActivity {
 
     private void registerUser(String mail, String password) {
         if (validateForm()){
-            myUser = new Usuario(nombre.getText().toString(),apellido.getText().toString(),email.getText().toString(),identificacion.getText().toString(),ubicacion);
             mAuth.createUserWithEmailAndPassword(mail, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -142,14 +141,15 @@ public class Registro extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 Log.d("Sign Up", "createUserWithEmail:onComplete:" + task.isSuccessful());
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                myRef=database.getReference(PATH_USERS+user.getUid());
-                                myRef.setValue(myUser);
                                 if(user!=null){ //Update user Info
                                     UserProfileChangeRequest.Builder upcrb = new UserProfileChangeRequest.Builder();
                                     upcrb.setDisplayName(nombre.getText().toString());
                                     upcrb.setPhotoUri(imagen);
                                     user.updateProfile(upcrb.build());
-                                    uploadFile();
+                                    String path = uploadFile();
+                                    myUser = new Usuario(nombre.getText().toString(),apellido.getText().toString(),email.getText().toString(),identificacion.getText().toString(),path,ubicacion);
+                                    myRef=database.getReference(PATH_USERS+user.getUid());
+                                    myRef.setValue(myUser);
                                     updateUI(user);
                                 }
 
@@ -223,7 +223,7 @@ public class Registro extends AppCompatActivity {
         return valid;
     }
 
-    private void uploadFile(){
+    private String uploadFile(){
         File f = new File(imagen.getPath());
         String imageName = f.getName();
         String path = "images/profile/"+mAuth.getUid()+"/"+ imageName;
@@ -242,6 +242,7 @@ public class Registro extends AppCompatActivity {
                         // ...
                     }
                 });
+        return path;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
