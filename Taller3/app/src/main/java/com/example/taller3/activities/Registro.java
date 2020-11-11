@@ -232,6 +232,7 @@ public class Registro extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
                         Log.i("Sign Up", "Succesfully upload image");
                     }
                 })

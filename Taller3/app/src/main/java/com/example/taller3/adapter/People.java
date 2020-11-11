@@ -24,10 +24,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.example.taller3.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -64,6 +66,8 @@ public class People extends ArrayAdapter<String> {
         this.longitudes = longitudes;
         this.imagenes = imagenes;
         this.mClickListener = listener;
+
+        this.mStorageRef = FirebaseStorage.getInstance().getReference();
     }
 
     public View getView(int position,View view,ViewGroup parent) {
@@ -87,16 +91,21 @@ public class People extends ArrayAdapter<String> {
             holder = (ViewHolderPublicacion) view.getTag();
         }
 
-        try {
-            downloadFile(position,holder);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         holder.nombre.setText(nombres.get(position));
         holder.apellido.setText(apellidos.get(position));
         holder.mail.setText(emails.get(position));
         holder.id.setText(ids.get(position));
+
+        StorageReference imgRef = mStorageRef.child(imagenes.get(position));
+        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context.getBaseContext())
+                        .load(uri)
+                        .into(holder.image);
+            }
+        });
+
 
 
         Button map = (Button) view.findViewById(R.id.button);
@@ -122,24 +131,6 @@ public class People extends ArrayAdapter<String> {
         TextView id;
         TextView mail;
         ImageView image;
-    }
-
-    private void downloadFile(final int position, final ViewHolderPublicacion holder) throws IOException {
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference imgRef = mStorageRef.child(imagenes.get(position));
-        final File localFile = File.createTempFile("images", "jpg");
-        imgRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
-                holder.image.setImageBitmap(bitmap);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
     }
 }
 

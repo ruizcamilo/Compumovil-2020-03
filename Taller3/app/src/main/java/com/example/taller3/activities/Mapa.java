@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.taller3.R;
+import com.example.taller3.model.LocationT;
 import com.example.taller3.tasks.RutaTask;
 import com.example.taller3.model.Usuario;
 import com.google.android.gms.common.api.ApiException;
@@ -64,9 +65,11 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
     //FireBase Database
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private DatabaseReference myRef, myRef2;
     private ValueEventListener val;
     public static final String PATH_USERS="users/";
+    public static final String PATH_UBIS="locations/";
+    public static final String PATH_DISP="disponibles/";
 
     //Map
     private GoogleMap mMap;
@@ -102,6 +105,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         mAuth = FirebaseAuth.getInstance();
         database= FirebaseDatabase.getInstance();
         myRef = database.getReference(PATH_USERS);
+        myRef2 = database.getReference(PATH_DISP);
         //Map
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
         mLocationRequest = createLocationRequest();
@@ -170,7 +174,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         code = choice;
         switch (choice){
             case 1:
-                //TODO ver mi posicion actual en vivo y mostrar las localizaciones del archivo JSON
+                marcadores();
                 break;
             case 2:
                 //TODO ver la posicion de otra persona en vivo con datos de firebase
@@ -363,12 +367,38 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                     Usuario myUser = dataSnapshot.getValue(Usuario.class);
-                    if(myUser.isActivo())
+                    String id = dataSnapshot.getKey();
+                    myRef2=database.getReference(PATH_DISP+id);
+                    if(myUser.isActivo()){
+                        myRef2.removeValue();
+                        Toast.makeText(Mapa.this, "Estado cambiado a inactivo", Toast.LENGTH_SHORT).show();
                         myUser.setActivo(false);
-                    else
+                    }
+                    else{
+                        myRef2.setValue(myUser.getNombre() + " "+  myUser.getApellido());
+                        Toast.makeText(Mapa.this, "Estado cambiado a activo", Toast.LENGTH_SHORT).show();
                         myUser.setActivo(true);
+                    }
                     myRef.setValue(myUser);
                     Log.i("Mapa", "Encontró usuario: " + myUser.getNombre());
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Mapa", "error en la consulta", databaseError.toException());
+            }
+        });
+    }
+
+    public void marcadores(){
+        myRef = database.getReference(PATH_UBIS);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    LocationT ubi = singleSnapshot.getValue(LocationT.class);
+                    LatLng position = new LatLng(ubi.getLatitude(),ubi.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(position).title(ubi.getName()).snippet(geoCoderSearchLatLang(position)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
