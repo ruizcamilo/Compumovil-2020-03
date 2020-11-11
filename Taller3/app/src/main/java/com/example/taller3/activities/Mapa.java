@@ -7,12 +7,16 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.taller3.R;
 import com.example.taller3.model.LocationT;
+import com.example.taller3.services.NotificationJobIntentService;
 import com.example.taller3.tasks.RutaTask;
 import com.example.taller3.model.Usuario;
 import com.google.android.gms.common.api.ApiException;
@@ -89,8 +94,8 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     public static final double upperRightLatitude= 11.983639;
     public static final double upperRightLongitude= -71.869905;
 
-    //Layout
-    private Button accion;
+    //Notificaciones
+    public static String CHANNEL_ID = "Notificaciones";
 
     //Intent
     private int code;
@@ -110,6 +115,10 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         mLocationProvider = LocationServices.getFusedLocationProviderClient(this);
         mLocationRequest = createLocationRequest();
         mGeocoder = new Geocoder(getBaseContext());
+        //Notificaciones
+        createNotificationChannel();
+        Intent intent = new Intent(this, NotificationJobIntentService.class);
+        NotificationJobIntentService.enqueueWork(this, intent);
         //Permiso
         solicitarPermiso(this, Manifest.permission.ACCESS_FINE_LOCATION, "", LOCATION_PERMISSION);
         //Mi localización
@@ -177,7 +186,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 marcadores();
                 break;
             case 2:
-                //TODO ver la posicion de otra persona en vivo con datos de firebase
                 //Localización de la persona que estoy buscando
                 getUsersLocation();
                 break;
@@ -189,11 +197,9 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void getUsersLocation() {
-        //TODO GIGANTE
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("bundle");
         String id = bundle.getString("id");
-        //String id = "nQMV65EyRjgSNW1XV8XzGtW2zxB3";
         myRef=database.getReference(PATH_USERS+id);
         val = myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -405,5 +411,22 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                 Log.w("Mapa", "error en la consulta", databaseError.toException());
             }
         });
+    }
+
+    private void createNotificationChannel() {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Notificaciones";
+            String description = "mostrar el cambio de estado de un usuario";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+    //IMPORTANCE_MAX MUESTRA LA NOTIFICACIÓN ANIMADA
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+    // Register the channel with the system; you can't change the importance
+    // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

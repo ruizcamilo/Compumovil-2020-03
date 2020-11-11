@@ -37,6 +37,7 @@ public class ListActivity extends AppCompatActivity {
     private People adapterList;
 
     //AUX
+    List<String> codigos= new ArrayList<>();
     List<String> nombres= new ArrayList<>();
     List<String> apellidos= new ArrayList<>();
     List<String> ids= new ArrayList<>();
@@ -60,6 +61,7 @@ public class ListActivity extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                codigos.clear();
                 nombres.clear();
                 apellidos.clear();
                 ids.clear();
@@ -71,6 +73,7 @@ public class ListActivity extends AppCompatActivity {
                 {
                     Usuario myuser = single.getValue(Usuario.class);
                     if(myuser.isActivo()) {
+                        codigos.add(single.getKey());
                         nombres.add(myuser.getNombre());
                         apellidos.add(myuser.getApellido());
                         ids.add(myuser.getIdentificacion());
@@ -100,7 +103,7 @@ public class ListActivity extends AppCompatActivity {
         Intent intent = new Intent(this, Mapa.class);
         Bundle bundle = new Bundle();
         bundle.putInt("codigo", 2);
-        bundle.putString("email", emails.get(position));
+        bundle.putString("id", codigos.get(position));
         intent.putExtra("bundle", bundle);
         startActivity(intent);
     }
