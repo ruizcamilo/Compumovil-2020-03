@@ -44,10 +44,11 @@ public class NotificationJobIntentService extends JobIntentService {
     private static final int JOB_ID = 12;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference availables;
+    private DatabaseReference availables, myRef;
     public static String CHANNEL_ID = "Notificaciones";
     public static final String PATH_AVAILABLE="disponibles/";
     private Map<String, Boolean> disponibles;
+    private Usuario soon2change;
 
     public static void enqueueWork(Context context, Intent intent) {
         enqueueWork(context, NotificationJobIntentService.class, JOB_ID, intent);
@@ -88,10 +89,16 @@ public class NotificationJobIntentService extends JobIntentService {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(firebaseAuth.getCurrentUser() != null)
                 {
+                    if(disponibles.size() < dataSnapshot.getChildrenCount())
+                    {
                         for(DataSnapshot avai: dataSnapshot.getChildren())
                         {
-                            
+                            if(disponibles.get(avai) == null)
+                            {
+                                BuildNotification(avai.getKey());
+                            }
                         }
+                    }
                 }
             }
 
@@ -104,11 +111,11 @@ public class NotificationJobIntentService extends JobIntentService {
 
     private void BuildNotification(String id)
     {
-        myRef=database.getReference(Mapa.PATH_USERS+id);
-        val = myRef.addValueEventListener(new ValueEventListener() {
+        myRef=firebaseDatabase.getReference(Mapa.PATH_USERS+id);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                soon2change = dataSnapshot.getValue(Usuario.class);
             }
 
             @Override
@@ -119,8 +126,8 @@ public class NotificationJobIntentService extends JobIntentService {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
         mBuilder.setSmallIcon(R.drawable.bell);
-        mBuilder.setContentTitle(title);
-        mBuilder.setContentText(message);
+        mBuilder.setContentTitle("Nuevo Usuario disponible");
+        mBuilder.setContentText(soon2change.getNombre() +" "+soon2change.getApellido()+" se acabada conectar. Haz click acá para ver su ubicación.");
         mBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         //Acción asociada a la notificación
