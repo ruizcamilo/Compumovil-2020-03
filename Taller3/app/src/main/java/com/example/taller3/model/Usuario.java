@@ -18,6 +18,7 @@ public class Usuario {
     public Usuario(){
 
     }
+
     public Usuario(String nombre, String apellido, String email, String identificacion,String imagen, LatLng ubicacion) {
         this.nombre = nombre;
         this.apellido = apellido;

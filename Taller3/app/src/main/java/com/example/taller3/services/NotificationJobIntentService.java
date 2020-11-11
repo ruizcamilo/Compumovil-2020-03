@@ -44,10 +44,11 @@ public class NotificationJobIntentService extends JobIntentService {
     private static final int JOB_ID = 12;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
-    private DatabaseReference availables;
+    private DatabaseReference availables, myRef;
     public static String CHANNEL_ID = "Notificaciones";
     public static final String PATH_AVAILABLE="disponibles/";
     private Map<String, Boolean> disponibles;
+    public String nombre, apellido;
 
     public static void enqueueWork(Context context, Intent intent) {
         enqueueWork(context, NotificationJobIntentService.class, JOB_ID, intent);
@@ -74,7 +75,7 @@ public class NotificationJobIntentService extends JobIntentService {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot d: dataSnapshot.getChildren())
                 {
-                    disponibles.put(dataSnapshot.getValue().toString(), true);
+                    disponibles.put(d.getKey(), true);
                 }
             }
 
@@ -88,10 +89,31 @@ public class NotificationJobIntentService extends JobIntentService {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(firebaseAuth.getCurrentUser() != null)
                 {
-                        for(DataSnapshot avai: dataSnapshot.getChildren())
+                    Map<String, Boolean> llega = new HashMap<>();
+                    for(DataSnapshot d: dataSnapshot.getChildren())
+                    {
+                        llega.put(d.getKey(), true);
+                    }
+                    if (disponibles.size() < llega.size())
+                    {
+                        for (Map.Entry<String, Boolean> entry: llega.entrySet())
                         {
-                            
+                            if(!disponibles.containsKey(entry.getKey()))
+                            {
+                                disponibles.put(entry.getKey(), true);
+                                BuildNotification(entry.getKey());
+                            }
                         }
+                    }
+                    else{
+                        for (Map.Entry<String, Boolean> entry: disponibles.entrySet())
+                        {
+                            if(!llega.containsKey(entry.getKey()))
+                            {
+                                disponibles.remove(entry.getKey());
+                            }
+                        }
+                    }
                 }
             }
 
@@ -104,11 +126,12 @@ public class NotificationJobIntentService extends JobIntentService {
 
     private void BuildNotification(String id)
     {
-        myRef=database.getReference(Mapa.PATH_USERS+id);
-        val = myRef.addValueEventListener(new ValueEventListener() {
+        myRef=firebaseDatabase.getReference(Mapa.PATH_USERS+id);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                Usuario myuser = dataSnapshot.getValue(Usuario.class);
+                setNombreApellido(myuser);
             }
 
             @Override
@@ -116,11 +139,11 @@ public class NotificationJobIntentService extends JobIntentService {
 
             }
         });
-
+        System.out.println("----------------------"+id);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
         mBuilder.setSmallIcon(R.drawable.bell);
-        mBuilder.setContentTitle(title);
-        mBuilder.setContentText(message);
+        mBuilder.setContentTitle("Nuevo Usuario disponible");
+        mBuilder.setContentText(this.nombre +" "+this.apellido+" se acabada conectar. Haz click acá para ver su ubicación.");
         mBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         //Acción asociada a la notificación
@@ -138,5 +161,10 @@ public class NotificationJobIntentService extends JobIntentService {
         int notificationId = 001;
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(notificationId, mBuilder.build());
+    }
+
+    private void setNombreApellido(Usuario myuser) {
+        this.nombre = myuser.getNombre();
+        this.apellido = myuser.getApellido();
     }
 }
