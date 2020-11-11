@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NotificationJobIntentService extends JobIntentService {
     private static final int JOB_ID = 12;
@@ -60,7 +61,7 @@ public class NotificationJobIntentService extends JobIntentService {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
         availables = firebaseDatabase.getReference(PATH_AVAILABLE);
-        disponibles = new HashMap<>();
+        disponibles = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -89,7 +90,7 @@ public class NotificationJobIntentService extends JobIntentService {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(firebaseAuth.getCurrentUser() != null)
                 {
-                    Map<String, Boolean> llega = new HashMap<>();
+                    Map<String, Boolean> llega = new ConcurrentHashMap<>();
                     for(DataSnapshot d: dataSnapshot.getChildren())
                     {
                         llega.put(d.getKey(), true);
@@ -131,7 +132,27 @@ public class NotificationJobIntentService extends JobIntentService {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Usuario myuser = dataSnapshot.getValue(Usuario.class);
-                setNombreApellido(myuser);
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(NotificationJobIntentService.this, CHANNEL_ID);
+                mBuilder.setSmallIcon(R.drawable.bell);
+                mBuilder.setContentTitle("Nuevo Usuario disponible");
+                mBuilder.setContentText(myuser.getNombre() +" "+myuser.getApellido()+" se acabada conectar. Haz click acá para ver su ubicación.");
+                mBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                //Acción asociada a la notificación
+                Intent intent = new Intent(NotificationJobIntentService.this, Mapa.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("codigo", 2);
+                bundle.putString("id", dataSnapshot.getKey());
+                intent.putExtra("bundle", bundle);
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(NotificationJobIntentService.this, 0, intent, 0);
+                mBuilder.setContentIntent(pendingIntent);
+                mBuilder.setAutoCancel(true); //Remueve la notificación cuando se toca
+
+                int notificationId = 001;
+                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(NotificationJobIntentService.this);
+                notificationManager.notify(notificationId, mBuilder.build());
             }
 
             @Override
@@ -139,28 +160,6 @@ public class NotificationJobIntentService extends JobIntentService {
 
             }
         });
-        System.out.println("----------------------"+id);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
-        mBuilder.setSmallIcon(R.drawable.bell);
-        mBuilder.setContentTitle("Nuevo Usuario disponible");
-        mBuilder.setContentText(this.nombre +" "+this.apellido+" se acabada conectar. Haz click acá para ver su ubicación.");
-        mBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        //Acción asociada a la notificación
-        Intent intent = new Intent(this, Mapa.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("codigo", 2);
-        bundle.putString("id", id);
-        intent.putExtra("bundle", bundle);
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-        mBuilder.setContentIntent(pendingIntent);
-        mBuilder.setAutoCancel(true); //Remueve la notificación cuando se toca
-
-        int notificationId = 001;
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(notificationId, mBuilder.build());
     }
 
     private void setNombreApellido(Usuario myuser) {

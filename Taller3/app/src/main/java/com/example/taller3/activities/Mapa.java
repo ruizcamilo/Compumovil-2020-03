@@ -272,9 +272,8 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
                                     mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                 }else{
-                                    //TODO probable null pointer exception
-                                    //mMap.moveCamera(CameraUpdateFactory.newLatLng(usersPosition));
-                                    //mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
+                                    mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                 }
                             }
                         }
@@ -282,7 +281,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
             mLocationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
-                    Location location = locationResult.getLastLocation();
+                    final Location location = locationResult.getLastLocation();
                     if (location != null) {
                         myPosition = new LatLng(location.getLatitude(), location.getLongitude());
                         if(myPositionMarker != null) {
@@ -290,6 +289,20 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                         }
                         myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                         //TODO cambiar mi posicion en la base de datos
+                        myRef = database.getReference(PATH_USERS+mAuth.getCurrentUser().getUid());
+                        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Usuario myUser = dataSnapshot.getValue(Usuario.class);
+                                myUser.setLatitud(location.getLatitude());
+                                myUser.setLongitud(location.getLongitude());
+                                myRef.setValue(myUser);
+                            }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w("Mapa", "error en la consulta", databaseError.toException());
+                            }
+                        });
                     }
                 }
             };
