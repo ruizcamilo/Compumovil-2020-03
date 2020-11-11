@@ -131,10 +131,17 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             startLocationUpdates();
         }
+        if(code == 1)
+        {
+            if(val != null) {
+            myRef.removeEventListener(val);
+            }
+        }
         if(code == 2) {
             getUsersLocation();
         }
     }
+
 
     @Override
     protected void onPause() {
@@ -183,6 +190,9 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         code = choice;
         switch (choice){
             case 1:
+                if(val != null) {
+                    myRef.removeEventListener(val);
+                }
                 marcadores();
                 break;
             case 2:
