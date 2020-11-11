@@ -392,6 +392,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
     public void cambiarEstado() {
         myRef = database.getReference(PATH_USERS+mAuth.getCurrentUser().getUid());
+        System.out.println("-------------"mAuth.getCurrentUser().getUid());
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -400,6 +401,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                     myRef2=database.getReference(PATH_DISP+id);
                     if(myUser.isActivo()){
                         myRef2.removeValue();
+
                         Toast.makeText(Mapa.this, "Estado cambiado a inactivo", Toast.LENGTH_SHORT).show();
                         myUser.setActivo(false);
                     }
