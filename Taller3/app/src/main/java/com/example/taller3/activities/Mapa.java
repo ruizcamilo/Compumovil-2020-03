@@ -134,7 +134,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         if(code == 1)
         {
             if(val != null) {
-            myRef.removeEventListener(val);
+                myRef.removeEventListener(val);
             }
         }
         if(code == 2) {
@@ -142,6 +142,13 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(val != null) {
+            myRef.removeEventListener(val);
+        }
+    }
 
     @Override
     protected void onPause() {
@@ -225,7 +232,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                     mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                     calcularDistancia(myPosition, usersPosition);
                     Toast.makeText(Mapa.this, "La distancia de aquí al punto es de: "+distance+"km.", Toast.LENGTH_LONG).show();
-
             }
 
             @Override
@@ -282,6 +288,7 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
                                     mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                 }else{
+                                    myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                                     mMap.moveCamera(CameraUpdateFactory.newLatLng(myPosition));
                                     mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
                                 }
@@ -299,7 +306,8 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
                         }
                         myPositionMarker = mMap.addMarker(new MarkerOptions().position(myPosition).title("Mi posición").snippet(geoCoderSearchLatLang(myPosition)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
                         //TODO cambiar mi posicion en la base de datos
-                        myRef = database.getReference(PATH_USERS+mAuth.getCurrentUser().getUid());
+                        myRef = database.getReference(PATH_USERS + mAuth.getCurrentUser().getUid());
+
                         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -364,10 +372,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
         return address;
     }
 
-    private void crearRuta(LatLng origen, LatLng destino) {
-        new RutaTask(this, mMap, origen, destino).execute();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_fire, menu);
@@ -392,7 +396,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback {
 
     public void cambiarEstado() {
         myRef = database.getReference(PATH_USERS+mAuth.getCurrentUser().getUid());
-        System.out.println("-------------"mAuth.getCurrentUser().getUid());
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

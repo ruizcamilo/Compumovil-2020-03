@@ -49,7 +49,6 @@ public class NotificationJobIntentService extends JobIntentService {
     public static String CHANNEL_ID = "Notificaciones";
     public static final String PATH_AVAILABLE="disponibles/";
     private Map<String, Boolean> disponibles;
-    public String nombre, apellido;
 
     public static void enqueueWork(Context context, Intent intent) {
         enqueueWork(context, NotificationJobIntentService.class, JOB_ID, intent);
@@ -142,11 +141,12 @@ public class NotificationJobIntentService extends JobIntentService {
                 Intent intent = new Intent(NotificationJobIntentService.this, Mapa.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("codigo", 2);
+                System.out.println("-------------------"+dataSnapshot.getKey());
                 bundle.putString("id", dataSnapshot.getKey());
                 intent.putExtra("bundle", bundle);
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(NotificationJobIntentService.this, 0, intent, 0);
+                PendingIntent pendingIntent = PendingIntent.getActivity(NotificationJobIntentService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setContentIntent(pendingIntent);
                 mBuilder.setAutoCancel(true); //Remueve la notificación cuando se toca
 
@@ -160,10 +160,5 @@ public class NotificationJobIntentService extends JobIntentService {
 
             }
         });
-    }
-
-    private void setNombreApellido(Usuario myuser) {
-        this.nombre = myuser.getNombre();
-        this.apellido = myuser.getApellido();
     }
 }
